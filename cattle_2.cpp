@@ -3,6 +3,7 @@
 #include <string>
 #include <stdlib.h>
 #include <windows.h>
+#include <vector>
 using namespace std;
 //#include <multiprintf.h>
 
@@ -39,7 +40,7 @@ class cattle{
             multiprintf(" 生长周期：");
             cout<<growthCycle<<endl;
         }
-        cattle(int p,int w,int m,int g):price(p),weight(w),milkProduction(m),growthCycle(g){
+        cattle(int p=0,int w=0,int m=0,int g=0):price(p),weight(w),milkProduction(m),growthCycle(g){
             _num++;
             money-=price;
             sum_milkProduction+=milkProduction;
@@ -47,9 +48,9 @@ class cattle{
         }
         ~cattle(){
             //multiprintf("成功删除一头牛");
+            cout<<"d?\n";
             _num--;
-            sum_milkProduction+=milkProduction;
-            //_show();
+            sum_milkProduction-=milkProduction;
         }
         void operator+= (const feed &f);
 };
@@ -103,7 +104,24 @@ class smallbeefCattle:public cattle{
         
 };
 int smallbeefCattle::num=0;
+class niujuan{
+    protected:
+        cattle herd[100];
+    public:
+        int count=0;
+        void add(cattle *c){
+            if(count<100) herd[count++]=*c;
+        }
+        void show(){
+            for(int i=0;i<count;i++){
+                herd[i]._show();
+            }
+        }
+};
+/*class nainiujuan::public niujuan{
 
+}
+class rouniu::public niujuan*/
 
 void cattle::operator+= (const feed &f){
     weight+=f.addtoWeight;
@@ -113,13 +131,23 @@ void cattle::operator+= (const feed &f){
 }
 int main(){
     int day=0,a=0,b=0,c=0,milk=0,d=0,e=0,f=0,feedindex=0;
-    cattle *Cattle[500]={NULL};
+    cattle *Cattle[1000]={NULL};
+    niujuan NJ[3];
     feed Feed_1(10,20,10,5),Feed_2(12,25,10,10),Feed_3(15,20,30,10);
     do{
-        while(a--&&(cattle::_num<500)) Cattle[ cattle::_num ]=new milkCattle; //会先执行构造函数使得cattle::_num自增
-        while(b--&&(cattle::_num<500)) Cattle[ cattle::_num ]=new bigbeefCattle;
-        while(c--&&(cattle::_num<500)) Cattle[ cattle::_num ]=new smallbeefCattle;
-        
+        while(a--&&(cattle::_num<1000)) {
+            Cattle[ cattle::_num ]=new milkCattle; //会先执行构造函数使得cattle::_num自增
+            NJ[0].add(Cattle[cattle::_num]);
+        }
+        while(b--&&(cattle::_num<1000)) {
+            Cattle[ cattle::_num ]=new bigbeefCattle;
+            NJ[1].add(Cattle[cattle::_num]);
+        }
+        while(c--&&(cattle::_num<1000)) {
+            Cattle[ cattle::_num ]=new smallbeefCattle;
+            NJ[2].add(Cattle[cattle::_num]);
+        }
+        for(int i=0;i<3;i++) NJ[i].show();
         multiprintf(" 日期：第");
         cout<<++day;
         multiprintf("天 当前金额：");
@@ -159,5 +187,3 @@ int main(){
         delete Cattle[i];
     }
 }
-
-
